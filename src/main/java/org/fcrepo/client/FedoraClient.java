@@ -1,6 +1,7 @@
 package org.fcrepo.client;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import javax.xml.bind.JAXBContext;
@@ -19,7 +20,8 @@ import org.fcrepo.jaxb.responses.management.DatastreamProfile;
 public class FedoraClient {
 
 	private static final String PATH_OBJECT_PROFILE = "/objects/";
-	private static final String PATH_OBJECT_DATASTREAMS = "/datstreams/";
+	private static final String PATH_DATASTREAMS = "/datstreams/";
+	private static final String PATH_DATASTREAM_CONTENT = "/content/";
 
 	private final HttpClient client = new DefaultHttpClient();
 	private URI fedoraUri;
@@ -63,7 +65,7 @@ public class FedoraClient {
 	}
 
 	public ObjectDatastreams getObjectDatastreams(final String objectId) throws IOException {
-		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE + objectId + PATH_OBJECT_DATASTREAMS);
+		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE + objectId + PATH_DATASTREAMS);
 		final HttpResponse resp = client.execute(get);
 		if (resp.getStatusLine().getStatusCode() != 200) {
 			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
@@ -79,7 +81,7 @@ public class FedoraClient {
 	}
 
 	public DatastreamProfile getDatastreamProfile(final String objectId, final String dsId) throws IOException {
-		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE + objectId + PATH_OBJECT_DATASTREAMS + dsId);
+		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE + objectId + PATH_DATASTREAMS + dsId);
 		final HttpResponse resp = client.execute(get);
 		if (resp.getStatusLine().getStatusCode() != 200) {
 			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
@@ -93,5 +95,15 @@ public class FedoraClient {
 			IOUtils.closeQuietly(resp.getEntity().getContent());
 		}
 
+	}
+
+	public InputStream getDatastreamContent(final String objectId, final String dsId) throws IOException {
+		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE + objectId + PATH_DATASTREAMS + dsId
+				+ PATH_DATASTREAM_CONTENT);
+		final HttpResponse resp = client.execute(get);
+		if (resp.getStatusLine().getStatusCode() != 200) {
+			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
+		}
+		return resp.getEntity().getContent();
 	}
 }
