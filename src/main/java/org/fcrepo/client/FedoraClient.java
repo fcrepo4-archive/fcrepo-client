@@ -22,13 +22,20 @@ public class FedoraClient {
 	private static final String PATH_OBJECT_DATASTREAMS = "/datstreams/";
 
 	private final HttpClient client = new DefaultHttpClient();
-	private final URI fedoraUri;
+	private URI fedoraUri;
 
 	private Unmarshaller unmarshaller;
 
-	public FedoraClient(URI fedoraUri) {
+	public FedoraClient(String fedoraUri) {
+		this.fedoraUri = URI.create(fedoraUri);
+	}
+
+	public FedoraClient() {
 		super();
-		this.fedoraUri = fedoraUri;
+	}
+
+	public void setFedoraUri(String fedoraUri) {
+		this.fedoraUri = URI.create(fedoraUri);
 	}
 
 	private Unmarshaller getUnmarshaller() throws JAXBException {
