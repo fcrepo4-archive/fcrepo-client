@@ -20,7 +20,7 @@ import org.fcrepo.jaxb.responses.management.DatastreamProfile;
 public class FedoraClient {
 
 	private static final String PATH_OBJECT_PROFILE = "/objects/";
-	private static final String PATH_DATASTREAMS = "/datstreams/";
+	private static final String PATH_DATASTREAMS = "/datastreams/";
 	private static final String PATH_DATASTREAM_CONTENT = "/content/";
 
 	private final HttpClient client = new DefaultHttpClient();
@@ -102,6 +102,7 @@ public class FedoraClient {
 				+ PATH_DATASTREAM_CONTENT);
 		final HttpResponse resp = client.execute(get);
 		if (resp.getStatusLine().getStatusCode() != 200) {
+			resp.getEntity().getContent().close();
 			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
 		}
 		return resp.getEntity().getContent();
