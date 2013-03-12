@@ -123,7 +123,7 @@ public class FedoraClient {
 		/* e.g. [pid1,pid2] */ 
 		/* so strip the square brackets */
 		/* and return the split */
-		data = data.substring(1, data.length() - 2);
+		data = data.substring(1, data.length() - 1);
 		return Arrays.asList(data.split(","));
 	}
 }
