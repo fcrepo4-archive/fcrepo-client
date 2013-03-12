@@ -3,6 +3,8 @@ package org.fcrepo.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -106,5 +108,22 @@ public class FedoraClient {
 			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
 		}
 		return resp.getEntity().getContent();
+	}
+
+	public List<String> getPids() throws IOException {
+		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE);
+		final HttpResponse resp = client.execute(get);
+		if (resp.getStatusLine().getStatusCode() != 200) {
+			resp.getEntity().getContent().close();
+			throw new IOException("Unable to fetch object list from fedora: " + resp.getStatusLine().getReasonPhrase());
+		}
+		String data = IOUtils.toString(resp.getEntity().getContent());
+
+		/* fedora4 returns a JSON array of strings in square brackets 
+		/* e.g. [pid1,pid2] */ 
+		/* so strip the square brackets */
+		/* and return the split */
+		data = data.substring(1, data.length() - 2);
+		return Arrays.asList(data.split(","));
 	}
 }
