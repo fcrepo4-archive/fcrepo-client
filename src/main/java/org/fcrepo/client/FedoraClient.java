@@ -21,6 +21,8 @@ import org.fcrepo.jaxb.responses.management.DatastreamProfile;
 
 public class FedoraClient {
 
+	public static final String PROPERTY_FCREPO_URL = "org.fcrepo.fixity.fcrepo.url"; 
+
 	private static final String PATH_OBJECT_PROFILE = "/objects/";
 	private static final String PATH_DATASTREAMS = "/datastreams/";
 	private static final String PATH_DATASTREAM_CONTENT = "/content/";
@@ -30,16 +32,18 @@ public class FedoraClient {
 
 	private Unmarshaller unmarshaller;
 
-	public FedoraClient(String fedoraUri) {
-		this.fedoraUri = URI.create(fedoraUri);
-	}
-
 	public FedoraClient() {
 		super();
 	}
 
 	public void setFedoraUri(String fedoraUri) {
-		this.fedoraUri = URI.create(fedoraUri);
+		/* Check for a user set java property first to have it override the injected bean value */
+		String uriProp = System.getProperty(PROPERTY_FCREPO_URL);
+		if (uriProp == null){
+			this.fedoraUri = URI.create(fedoraUri);
+		}else{
+			this.fedoraUri = URI.create(uriProp);
+		}
 	}
 
 	private Unmarshaller getUnmarshaller() throws JAXBException {
