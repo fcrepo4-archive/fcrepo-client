@@ -47,11 +47,15 @@ public class FedoraClient {
 			this.fedoraUri = URI.create(uriProp);
 		}
 	}
+	
+	JAXBContext getContext() throws JAXBException {
+		return JAXBContext.newInstance(ObjectProfile.class, ObjectDatastreams.class, DatastreamProfile.class, DatastreamFixity.class);
+	}
 
-	private Unmarshaller getUnmarshaller() throws JAXBException {
+	Unmarshaller getUnmarshaller() throws JAXBException {
 		if (unmarshaller == null) {
-			unmarshaller = JAXBContext.newInstance(ObjectProfile.class, ObjectDatastreams.class, DatastreamProfile.class)
-					.createUnmarshaller();
+			unmarshaller = 
+					getContext().createUnmarshaller();
 		}
 		return unmarshaller;
 	}
