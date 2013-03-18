@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.fcrepo.jaxb.responses.access.ObjectDatastreams;
 import org.fcrepo.jaxb.responses.access.ObjectProfile;
+import org.fcrepo.jaxb.responses.management.DatastreamFixity;
 import org.fcrepo.jaxb.responses.management.DatastreamProfile;
 
 public class FedoraClient {
@@ -25,7 +26,8 @@ public class FedoraClient {
 
 	private static final String PATH_OBJECT_PROFILE = "/objects/";
 	private static final String PATH_DATASTREAMS = "/datastreams/";
-	private static final String PATH_DATASTREAM_CONTENT = "/content/";
+	private static final String PATH_DATASTREAM_CONTENT = "/content";
+	private static final String PATH_DATASTREAM_FIXITY = "/fixity";
 
 	private final HttpClient client = new DefaultHttpClient();
 	private URI fedoraUri;
@@ -112,6 +114,23 @@ public class FedoraClient {
 			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
 		}
 		return resp.getEntity().getContent();
+	}
+	
+	public DatastreamFixity getDatastreamFixity(final String objectId, final String dsId) throws IOException {
+		final HttpGet get = new HttpGet(fedoraUri.toASCIIString() + PATH_OBJECT_PROFILE + objectId + PATH_DATASTREAMS + dsId
+				+ PATH_DATASTREAM_FIXITY);
+		final HttpResponse resp = client.execute(get);
+		if (resp.getStatusLine().getStatusCode() != 200) {
+			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
+		}
+		try {
+			DatastreamFixity df = (DatastreamFixity) this.getUnmarshaller().unmarshal(resp.getEntity().getContent());
+			return df;
+		} catch (JAXBException e) {
+			throw new IOException("Unabel to deserialize object profile", e);
+		} finally {
+			IOUtils.closeQuietly(resp.getEntity().getContent());
+		}
 	}
 
 	public List<String> getPids() throws IOException {
