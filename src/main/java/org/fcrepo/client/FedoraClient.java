@@ -82,7 +82,7 @@ public class FedoraClient {
 			ObjectDatastreams datastreams = (ObjectDatastreams) this.getUnmarshaller().unmarshal(resp.getEntity().getContent());
 			return datastreams;
 		} catch (JAXBException e) {
-			throw new IOException("Unabel to deserialize object profile", e);
+			throw new IOException("Unable to deserialize object profile", e);
 		} finally {
 			IOUtils.closeQuietly(resp.getEntity().getContent());
 		}
@@ -98,7 +98,7 @@ public class FedoraClient {
 			DatastreamProfile ds = (DatastreamProfile) this.getUnmarshaller().unmarshal(resp.getEntity().getContent());
 			return ds;
 		} catch (JAXBException e) {
-			throw new IOException("Unabel to deserialize object profile", e);
+			throw new IOException("Unable to deserialize object profile", e);
 		} finally {
 			IOUtils.closeQuietly(resp.getEntity().getContent());
 		}
@@ -121,13 +121,13 @@ public class FedoraClient {
 				+ PATH_DATASTREAM_FIXITY);
 		final HttpResponse resp = client.execute(get);
 		if (resp.getStatusLine().getStatusCode() != 200) {
-			throw new IOException("Unable to fetch object profile from fedora: " + resp.getStatusLine().getReasonPhrase());
+			throw new IOException("Unable to fetch datastream fixity from fedora: " + resp.getStatusLine().getReasonPhrase());
 		}
 		try {
 			DatastreamFixity df = (DatastreamFixity) this.getUnmarshaller().unmarshal(resp.getEntity().getContent());
 			return df;
 		} catch (JAXBException e) {
-			throw new IOException("Unabel to deserialize object profile", e);
+			throw new IOException("Unable to deserialize datastream fixity", e);
 		} finally {
 			IOUtils.closeQuietly(resp.getEntity().getContent());
 		}
