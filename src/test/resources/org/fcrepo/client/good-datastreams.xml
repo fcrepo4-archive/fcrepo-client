@@ -1,0 +1,5 @@
+<objectDatastreams pid="test:object1" xmlns="http://www.fedora.info/definitions/1/0/access/">
+<datastreams>
+  <datastream dsid="foo:bar" label="test ds" mimeType="binary/octet-stream"></datastream>
+</datastreams>
+</objectDatastreams>
