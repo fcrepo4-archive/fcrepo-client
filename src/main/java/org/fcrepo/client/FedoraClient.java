@@ -24,18 +24,22 @@ public class FedoraClient {
 
 	public static final String PROPERTY_FCREPO_URL = "org.fcrepo.fixity.fcrepo.url"; 
 
-	private static final String PATH_OBJECT_PROFILE = "/objects/";
-	private static final String PATH_DATASTREAMS = "/datastreams/";
-	private static final String PATH_DATASTREAM_CONTENT = "/content";
-	private static final String PATH_DATASTREAM_FIXITY = "/fixity";
+    static final String PATH_OBJECT_PROFILE = "/objects/";
+	static final String PATH_DATASTREAMS = "/datastreams/";
+	static final String PATH_DATASTREAM_CONTENT = "/content";
+	static final String PATH_DATASTREAM_FIXITY = "/fixity";
 
-	private final HttpClient client = new DefaultHttpClient();
+	private HttpClient client = new DefaultHttpClient();
 	private URI fedoraUri;
 
 	private Unmarshaller unmarshaller;
 
 	public FedoraClient() {
 		super();
+	}
+	
+	FedoraClient(HttpClient client) {
+		this.client = client;
 	}
 
 	public void setFedoraUri(String fedoraUri) {
@@ -46,6 +50,10 @@ public class FedoraClient {
 		}else{
 			this.fedoraUri = URI.create(uriProp);
 		}
+	}
+	
+	URI getFedoraUri() {
+		return this.fedoraUri;
 	}
 	
 	JAXBContext getContext() throws JAXBException {
@@ -70,7 +78,7 @@ public class FedoraClient {
 			ObjectProfile profile = (ObjectProfile) this.getUnmarshaller().unmarshal(resp.getEntity().getContent());
 			return profile;
 		} catch (JAXBException e) {
-			throw new IOException("Unabel to deserialize object profile", e);
+			throw new IOException("Unable to deserialize object profile", e);
 		} finally {
 			IOUtils.closeQuietly(resp.getEntity().getContent());
 		}
