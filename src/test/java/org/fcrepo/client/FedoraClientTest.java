@@ -48,7 +48,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.matchers.Equals;
 
-public class FedoraClientTests {
+public class FedoraClientTest {
 	
 	private static final String MOCK_URI = "http://testhost.info:8080/fcrepo";
 	
@@ -67,7 +67,7 @@ public class FedoraClientTests {
 		testObj = null;
 		mockClient = null;
 	}
-
+	
 	@Test
 	public void testContext() throws JAXBException, InstantiationException, IllegalAccessException{
 		JAXBContext context = testObj.getContext();
@@ -323,7 +323,7 @@ public class FedoraClientTests {
 		when(response.getStatusLine()).thenReturn(status200);
 		HttpEntity mockEntity = mock(HttpEntity.class);
 		if (entityResource != null) {
-		  when(mockEntity.getContent()).thenReturn(FedoraClientTests.class.getResourceAsStream(entityResource));
+		  when(mockEntity.getContent()).thenReturn(FedoraClientTest.class.getResourceAsStream(entityResource));
 		} else {
 			  when(mockEntity.getContent()).thenReturn(mock(InputStream.class));
 		}
