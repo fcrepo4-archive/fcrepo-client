@@ -1,19 +1,18 @@
 package org.fcrepo.client;
 
+import static org.fcrepo.client.GetMatcher.getLike;
+import static org.fcrepo.client.GetMatcher.getNotLike;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import static org.mockito.Mockito.*;
-
-import static org.fcrepo.client.GetMatcher.getLike;
-import static org.fcrepo.client.GetMatcher.getNotLike;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
@@ -25,7 +24,6 @@ import javax.ws.rs.core.Request;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -34,19 +32,15 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
-
 import org.fcrepo.api.FedoraDatastreams;
 import org.fcrepo.api.FedoraObjects;
-
 import org.fcrepo.jaxb.responses.access.ObjectDatastreams;
 import org.fcrepo.jaxb.responses.access.ObjectProfile;
 import org.fcrepo.jaxb.responses.management.DatastreamFixity;
 import org.fcrepo.jaxb.responses.management.DatastreamProfile;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.matchers.Equals;
 
 public class FedoraClientTest {
 	
@@ -71,9 +65,11 @@ public class FedoraClientTest {
 	@Test
 	public void testContext() throws JAXBException, InstantiationException, IllegalAccessException{
 		JAXBContext context = testObj.getContext();
-		Class [] expected = new Class[]{ObjectProfile.class, ObjectDatastreams.class, DatastreamProfile.class, DatastreamFixity.class};
+        Class<?>[] expected =
+                new Class[] {ObjectProfile.class, ObjectDatastreams.class,
+                        DatastreamProfile.class, DatastreamFixity.class};
 		Marshaller m = context.createMarshaller();
-		for (Class c:expected){
+        for (Class<?> c : expected) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			m.marshal(c.newInstance(), bos);
 			byte [] bytes = bos.toByteArray();
@@ -299,7 +295,8 @@ public class FedoraClientTest {
 		assertTrue(pids.contains("test:object1"));
 	}
 	
-	HttpGet getRequest(Class c, String method, Map<String, String> pathParams, Class<?>... parameterTypes) {
+    HttpGet getRequest(Class<?> c, String method,
+            Map<String, String> pathParams, Class<?>... parameterTypes) {
 		Method m = null;
 		try {
 			m = c.getDeclaredMethod(method, parameterTypes);
@@ -340,7 +337,7 @@ public class FedoraClientTest {
 		when(response.getEntity()).thenReturn(mockEntity);
 	}
 	
-	static String getJaxrsPath(Class c, Method m) {
+    static String getJaxrsPath(Class<?> c, Method m) {
 		Path path = (Path)c.getAnnotation(Path.class);
 		Path mPath = m.getAnnotation(Path.class);
 		String result = "";
