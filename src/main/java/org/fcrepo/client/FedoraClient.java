@@ -25,7 +25,7 @@ public class FedoraClient {
 
 	public static final String PROPERTY_FCREPO_URL = "org.fcrepo.fixity.fcrepo.url"; 
 
-    static final String PATH_OBJECT_PROFILE = "objects";
+    static final String PATH_OBJECT_PROFILE = "rest/objects";
 	static final String PATH_DATASTREAMS = "datastreams";
 	static final String PATH_DATASTREAM_CONTENT = "content";
 	static final String PATH_DATASTREAM_FIXITY = "fixity";
